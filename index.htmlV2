@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shaan — Portfolio</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Courier New', monospace; background: #0a0a0a; color: #e0e0e0; }
+    canvas#bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.07; pointer-events: none; z-index: 0; }
+    .scanline { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: repeating-linear-gradient(to bottom, transparent 0px, transparent 3px, rgba(0,0,0,0.05) 3px, rgba(0,0,0,0.05) 4px); pointer-events: none; z-index: 999; }
+    .content { position: relative; z-index: 1; }
+
+    nav { display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 2rem; border-bottom: 0.5px solid #2a2a2a; background: rgba(10,10,10,0.95); position: sticky; top: 0; z-index: 10; }
+    .nav-logo { color: #22c55e; font-size: 15px; }
+    .nav-links { display: flex; gap: 1.5rem; }
+    .nav-links a { color: #888; font-size: 12px; text-decoration: none; cursor: pointer; transition: color .2s; }
+    .nav-links a:hover { color: #22c55e; }
+
+    .hero { padding: 5rem 2rem 4rem; text-align: center; border-bottom: 0.5px solid #1a1a1a; }
+    .hero-tag { font-size: 12px; color: #22c55e; border: 0.5px solid #22c55e; display: inline-block; padding: 4px 14px; border-radius: 20px; margin-bottom: 1.5rem; }
+    .hero h1 { font-size: 42px; font-weight: 500; color: #fff; margin-bottom: 1rem; line-height: 1.2; }
+    .hero h1 span.green { color: #22c55e; }
+    .cursor { display: inline-block; width: 3px; height: 1em; background: #22c55e; animation: blink .7s infinite; vertical-align: text-bottom; margin-left: 2px; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+    .hero-sub { font-size: 14px; color: #666; max-width: 480px; margin: 0 auto 2rem; line-height: 1.9; }
+    .hero-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+    .btn-primary { background: #22c55e; color: #0a0a0a; border: none; padding: 10px 24px; font-family: 'Courier New', monospace; font-size: 13px; font-weight: 500; border-radius: 6px; cursor: pointer; transition: opacity .2s; }
+    .btn-primary:hover { opacity: .85; }
+    .btn-secondary { background: transparent; color: #22c55e; border: 0.5px solid #22c55e; padding: 10px 24px; font-family: 'Courier New', monospace; font-size: 13px; border-radius: 6px; cursor: pointer; transition: background .2s; }
+    .btn-secondary:hover { background: rgba(34,197,94,.08); }
+
+    .section { padding: 4rem 2rem; border-bottom: 0.5px solid #1a1a1a; max-width: 860px; margin: 0 auto; }
+    .section-tag { font-size: 11px; color: #22c55e; letter-spacing: 2px; text-transform: uppercase; margin-bottom: .5rem; }
+    .section-title { font-size: 24px; font-weight: 500; color: #fff; margin-bottom: 2rem; }
+
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+    .about-text { font-size: 13px; color: #888; line-height: 2.1; }
+    .stat-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-top: 1.5rem; }
+    .stat { background: #111; border: 0.5px solid #2a2a2a; border-radius: 8px; padding: 1rem; text-align: center; }
+    .stat-num { font-size: 26px; color: #22c55e; font-weight: 500; }
+    .stat-label { font-size: 11px; color: #555; margin-top: 4px; }
+
+    .skills-wrap { display: flex; flex-wrap: wrap; gap: 8px; }
+    .skill { background: #111; border: 0.5px solid #2a2a2a; color: #aaa; font-size: 12px; padding: 6px 14px; border-radius: 20px; transition: border-color .2s, color .2s; cursor: default; }
+    .skill:hover { border-color: #22c55e; color: #22c55e; }
+
+    .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+    .project-card { background: #111; border: 0.5px solid #2a2a2a; border-radius: 10px; padding: 1.5rem; transition: border-color .2s, transform .2s; cursor: pointer; }
+    .project-card:hover { border-color: #22c55e; transform: translateY(-3px); }
+    .project-emoji { font-size: 26px; margin-bottom: .75rem; }
+    .project-name { font-size: 14px; font-weight: 500; color: #fff; margin-bottom: .5rem; }
+    .project-desc { font-size: 12px; color: #666; line-height: 1.8; margin-bottom: 1rem; }
+    .project-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .project-tag { font-size: 10px; background: #1a1a1a; color: #22c55e; border: 0.5px solid rgba(34,197,94,.2); padding: 3px 8px; border-radius: 4px; }
+
+    .contact-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+    .contact-info { font-size: 13px; color: #888; line-height: 2.4; }
+    .contact-info a { color: #22c55e; text-decoration: none; }
+    .contact-info a:hover { text-decoration: underline; }
+    .contact-form { display: flex; flex-direction: column; gap: 10px; }
+    .contact-form input, .contact-form textarea { background: #111; border: 0.5px solid #2a2a2a; color: #e0e0e0; font-family: 'Courier New', monospace; font-size: 12px; padding: 10px 12px; border-radius: 6px; outline: none; transition: border-color .2s; resize: none; }
+    .contact-form input:focus, .contact-form textarea:focus { border-color: #22c55e; }
+    .contact-form input::placeholder, .contact-form textarea::placeholder { color: #444; }
+    .contact-form .btn-primary { margin-top: 4px; }
+
+    footer { text-align: center; padding: 2rem; font-size: 11px; color: #333; }
+
+    @media (max-width: 600px) {
+      .hero h1 { font-size: 28px; }
+      .about-grid, .contact-wrap { grid-template-columns: 1fr; }
+      .stat-grid { grid-template-columns: repeat(3,1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="bg"></canvas>
+<div class="scanline"></div>
+
+<div class="content">
+
+  <nav>
+    <div class="nav-logo">&gt; shaansaura.dev</div>
+    <div class="nav-links">
+      <a onclick="scrollTo('about')">about</a>
+      <a onclick="scrollTo('skills')">skills</a>
+      <a onclick="scrollTo('projects')">projects</a>
+      <a onclick="scrollTo('contact')">contact</a>
+    </div>
+  </nav>
+
+  <div class="hero">
+    <div class="hero-tag">available for collabs</div>
+    <h1>Hi, I'm <span class="green">Shaan</span><span class="cursor"></span></h1>
+    <p class="hero-sub">A self-taught developer building cool things on the internet. Creator of Shaans Aura Super OS and lover of dark themes. 🔥</p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="scrollTo('projects')">See my work</button>
+      <button class="btn-secondary" onclick="scrollTo('contact')">Get in touch</button>
+    </div>
+  </div>
+
+  <div class="section" id="about">
+    <div class="section-tag">// about me</div>
+    <div class="section-title">Who am I?</div>
+    <div class="about-grid">
+      <div class="about-text">
+        Hey! I'm Shaan — a developer based in Sydney, Australia 🇦🇺<br><br>
+        I love building things from scratch using HTML, CSS and JavaScript. I started coding recently and already have a live website with a multi-user login, terminal OS, RPG game and matrix rain background.<br><br>
+        When I'm not coding, I'm probably gaming or thinking about the next thing to build. 😎
+      </div>
+      <div class="stat-grid">
+        <div class="stat"><div class="stat-num">3+</div><div class="stat-label">projects live</div></div>
+        <div class="stat"><div class="stat-num">1</div><div class="stat-label">OS built</div></div>
+        <div class="stat"><div class="stat-num">∞</div><div class="stat-label">ideas</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="skills">
+    <div class="section-tag">// skills</div>
+    <div class="section-title">What I work with</div>
+    <div class="skills-wrap">
+      <div class="skill">HTML</div>
+      <div class="skill">CSS</div>
+      <div class="skill">JavaScript</div>
+      <div class="skill">GitHub</div>
+      <div class="skill">GitHub Pages</div>
+      <div class="skill">localStorage</div>
+      <div class="skill">Terminal UIs</div>
+      <div class="skill">Canvas API</div>
+      <div class="skill">Responsive Design</div>
+      <div class="skill">Game Logic</div>
+      <div class="skill">Dark Mode 🌙</div>
+      <div class="skill">Vibe Coding 🔥</div>
+    </div>
+  </div>
+
+  <div class="section" id="projects">
+    <div class="section-tag">// projects</div>
+    <div class="section-title">Things I've built</div>
+    <div class="projects-grid">
+      <div class="project-card" onclick="window.open('https://shaansaura.github.io/shaans-super-aura/')">
+        <div class="project-emoji">🔥</div>
+        <div class="project-name">Shaans Aura Super OS</div>
+        <div class="project-desc">A full terminal OS in the browser with multi-user login, RPG game, live weather, matrix rain and 5 colour themes.</div>
+        <div class="project-tags">
+          <span class="project-tag">HTML</span>
+          <span class="project-tag">CSS</span>
+          <span class="project-tag">JavaScript</span>
+          <span class="project-tag">localStorage</span>
+        </div>
+      </div>
+      <div class="project-card" onclick="window.open('https://shaansaura.github.io/shaan-os/')">
+        <div class="project-emoji">💻</div>
+        <div class="project-name">Shaan OS v1</div>
+        <div class="project-desc">The original web terminal that started it all. A simple command-line interface with custom commands.</div>
+        <div class="project-tags">
+          <span class="project-tag">HTML</span>
+          <span class="project-tag">JavaScript</span>
+        </div>
+      </div>
+      <div class="project-card">
+        <div class="project-emoji">🚀</div>
+        <div class="project-name">Next Project</div>
+        <div class="project-desc">Something epic is coming. Stay tuned... the best is always yet to be built. 👀</div>
+        <div class="project-tags">
+          <span class="project-tag">coming soon</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="contact">
+    <div class="section-tag">// contact</div>
+    <div class="section-title">Get in touch</div>
+    <div class="contact-wrap">
+      <div class="contact-info">
+        Want to collab, chat about code, or just say hey?<br><br>
+        📍 Sydney, Australia<br>
+        🐙 <a href="https://github.com/shaansaura" target="_blank">github.com/shaansaura</a><br>
+        🔥 <a href="https://shaansaura.github.io/shaans-super-aura/" target="_blank">Shaans Aura Super OS</a><br><br>
+        Always happy to connect with fellow builders. 😎
+      </div>
+      <div class="contact-form">
+        <input type="text" placeholder="your name">
+        <input type="text" placeholder="your email">
+        <textarea rows="4" placeholder="your message"></textarea>
+        <button class="btn-primary">send message</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>built by shaan &middot; shaansaura.github.io &middot; 2026</footer>
+
+</div>
+
+<script>
+  const c = document.getElementById('bg');
+  const cx = c.getContext('2d');
+  c.width = window.innerWidth; c.height = window.innerHeight;
+  const cols = Math.floor(c.width / 16);
+  const drops = Array(cols).fill(1);
+  function draw() {
+    cx.fillStyle = 'rgba(10,10,10,0.05)';
+    cx.fillRect(0, 0, c.width, c.height);
+    cx.fillStyle = '#22c55e';
+    cx.font = '14px Courier New';
+    drops.forEach((y, i) => {
+      cx.fillText(String.fromCharCode(0x30A0 + Math.random() * 96), i * 16, y * 16);
+      if (y * 16 > c.height && Math.random() > 0.975) drops[i] = 0;
+      drops[i]++;
+    });
+  }
+  setInterval(draw, 50);
+  window.addEventListener('resize', () => { c.width = window.innerWidth; c.height = window.innerHeight; });
+  function scrollTo(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); }
+</script>
+</body>
+</html>
