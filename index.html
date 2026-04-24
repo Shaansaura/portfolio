@@ -23,7 +23,8 @@
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
     .hero-sub { font-size: 14px; color: #666; max-width: 480px; margin: 0 auto 2rem; line-height: 1.9; }
     .hero-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-    .btn-primary { background: #22c55e; color: #0a0a0a; border: none; padding: 10px 24px; font-family: 'Courier New', monospace; font-size: 13px; font-weight: 500; border-radius: 6px; cursor: pointer; transition: opacity .2s; }
+    .btn-primary { background: transparent; color: #22c55e; border: 0.5px solid #22c55e; padding: 10px 24px; font-family: 'Courier New', monospace; font-size: 13px; border-radius: 6px; cursor: pointer; transition: all .2s; }
+.btn-primary:hover { background: #22c55e; color: #0a0a0a; }
     .btn-primary:hover { opacity: .85; }
     .btn-secondary { background: transparent; color: #22c55e; border: 0.5px solid #22c55e; padding: 10px 24px; font-family: 'Courier New', monospace; font-size: 13px; border-radius: 6px; cursor: pointer; transition: background .2s; }
     .btn-secondary:hover { background: rgba(34,197,94,.08); }
@@ -190,7 +191,6 @@
 
 </div>
 
-<canvas id="bg"></canvas>
 
 <script>
   const c = document.getElementById('bg');
