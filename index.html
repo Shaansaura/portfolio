@@ -10,13 +10,11 @@
     canvas#bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.07; pointer-events: none; z-index: 0; }
     .scanline { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: repeating-linear-gradient(to bottom, transparent 0px, transparent 3px, rgba(0,0,0,0.05) 3px, rgba(0,0,0,0.05) 4px); pointer-events: none; z-index: 999; }
     .content { position: relative; z-index: 1; }
-
     nav { display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 2rem; border-bottom: 0.5px solid #2a2a2a; background: rgba(10,10,10,0.95); position: sticky; top: 0; z-index: 10; }
     .nav-logo { color: #22c55e; font-size: 15px; }
     .nav-links { display: flex; gap: 1.5rem; }
     .nav-links a { color: #888; font-size: 12px; text-decoration: none; cursor: pointer; transition: color .2s; }
     .nav-links a:hover { color: #22c55e; }
-
     .hero { padding: 5rem 2rem 4rem; text-align: center; border-bottom: 0.5px solid #1a1a1a; }
     .hero-tag { font-size: 12px; color: #22c55e; border: 0.5px solid #22c55e; display: inline-block; padding: 4px 14px; border-radius: 20px; margin-bottom: 1.5rem; }
     .hero h1 { font-size: 42px; font-weight: 500; color: #fff; margin-bottom: 1rem; line-height: 1.2; }
@@ -25,27 +23,22 @@
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
     .hero-sub { font-size: 14px; color: #666; max-width: 480px; margin: 0 auto 2rem; line-height: 1.9; }
     .hero-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-
     .btn-primary { background: #22c55e; color: #0a0a0a; border: none; padding: 10px 24px; font-family: 'Courier New', monospace; font-size: 13px; font-weight: 500; border-radius: 6px; cursor: pointer; transition: opacity .2s; }
     .btn-primary:hover { opacity: .85; }
     .btn-secondary { background: transparent; color: #22c55e; border: 0.5px solid #22c55e; padding: 10px 24px; font-family: 'Courier New', monospace; font-size: 13px; border-radius: 6px; cursor: pointer; transition: background .2s; }
     .btn-secondary:hover { background: rgba(34,197,94,.08); }
-
     .section { padding: 4rem 2rem; border-bottom: 0.5px solid #1a1a1a; max-width: 860px; margin: 0 auto; }
     .section-tag { font-size: 11px; color: #22c55e; letter-spacing: 2px; text-transform: uppercase; margin-bottom: .5rem; }
     .section-title { font-size: 24px; font-weight: 500; color: #fff; margin-bottom: 2rem; }
-
     .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
     .about-text { font-size: 13px; color: #888; line-height: 2.1; }
     .stat-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-top: 1.5rem; }
     .stat { background: #111; border: 0.5px solid #2a2a2a; border-radius: 8px; padding: 1rem; text-align: center; }
     .stat-num { font-size: 26px; color: #22c55e; font-weight: 500; }
     .stat-label { font-size: 11px; color: #555; margin-top: 4px; }
-
     .skills-wrap { display: flex; flex-wrap: wrap; gap: 8px; }
     .skill { background: #111; border: 0.5px solid #2a2a2a; color: #aaa; font-size: 12px; padding: 6px 14px; border-radius: 20px; transition: border-color .2s, color .2s; cursor: default; }
     .skill:hover { border-color: #22c55e; color: #22c55e; }
-
     .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
     .project-card { background: #111; border: 0.5px solid #2a2a2a; border-radius: 10px; padding: 1.5rem; transition: border-color .2s, transform .2s; cursor: pointer; }
     .project-card:hover { border-color: #22c55e; transform: translateY(-3px); }
@@ -54,7 +47,6 @@
     .project-desc { font-size: 12px; color: #666; line-height: 1.8; margin-bottom: 1rem; }
     .project-tags { display: flex; flex-wrap: wrap; gap: 6px; }
     .project-tag { font-size: 10px; background: #1a1a1a; color: #22c55e; border: 0.5px solid rgba(34,197,94,.2); padding: 3px 8px; border-radius: 4px; }
-
     .contact-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
     .contact-info { font-size: 13px; color: #888; line-height: 2.4; }
     .contact-info a { color: #22c55e; text-decoration: none; }
@@ -63,14 +55,11 @@
     .contact-form input, .contact-form textarea { background: #111; border: 0.5px solid #2a2a2a; color: #e0e0e0; font-family: 'Courier New', monospace; font-size: 12px; padding: 10px 12px; border-radius: 6px; outline: none; transition: border-color .2s; resize: none; }
     .contact-form input:focus, .contact-form textarea:focus { border-color: #22c55e; }
     .contact-form input::placeholder, .contact-form textarea::placeholder { color: #444; }
-    .contact-form .btn-primary { margin-top: 4px; }
-
+    .success-msg { display: none; background: rgba(34,197,94,.1); border: 0.5px solid #22c55e; color: #22c55e; padding: 12px; border-radius: 6px; font-size: 13px; text-align: center; }
     footer { text-align: center; padding: 2rem; font-size: 11px; color: #333; }
-
     @media (max-width: 600px) {
       .hero h1 { font-size: 28px; }
       .about-grid, .contact-wrap { grid-template-columns: 1fr; }
-      .stat-grid { grid-template-columns: repeat(3,1fr); }
     }
   </style>
 </head>
@@ -84,10 +73,10 @@
   <nav>
     <div class="nav-logo">&gt; shaansaura.dev</div>
     <div class="nav-links">
-      <a onclick="scrollTo('about')">about</a>
-      <a onclick="scrollTo('skills')">skills</a>
-      <a onclick="scrollTo('projects')">projects</a>
-      <a onclick="scrollTo('contact')">contact</a>
+      <a onclick="goTo('about')">about</a>
+      <a onclick="goTo('skills')">skills</a>
+      <a onclick="goTo('projects')">projects</a>
+      <a onclick="goTo('contact')">contact</a>
     </div>
   </nav>
 
@@ -96,8 +85,8 @@
     <h1>Hi, I'm <span class="green">Shaan</span><span class="cursor"></span></h1>
     <p class="hero-sub">A self-taught developer building cool things on the internet. Creator of Shaans Aura Super OS and lover of dark themes. 🔥</p>
     <div class="hero-btns">
-      <button class="btn-primary" onclick="scrollTo('projects')">See my work</button>
-      <button class="btn-secondary" onclick="scrollTo('contact')">Get in touch</button>
+      <button class="btn-primary" onclick="goTo('projects')">See my work</button>
+      <button class="btn-secondary" onclick="goTo('contact')">Get in touch</button>
     </div>
   </div>
 
@@ -161,12 +150,14 @@
           <span class="project-tag">JavaScript</span>
         </div>
       </div>
-      <div class="project-card">
+      <div class="project-card" onclick="window.open('https://shaansaura.github.io/portfolio/')">
         <div class="project-emoji">🚀</div>
-        <div class="project-name">Next Project</div>
-        <div class="project-desc">Something epic is coming. Stay tuned... the best is always yet to be built. 👀</div>
+        <div class="project-name">Portfolio</div>
+        <div class="project-desc">This very site! A dark techy portfolio with matrix rain, smooth scrolling and a working contact form.</div>
         <div class="project-tags">
-          <span class="project-tag">coming soon</span>
+          <span class="project-tag">HTML</span>
+          <span class="project-tag">CSS</span>
+          <span class="project-tag">Formspree</span>
         </div>
       </div>
     </div>
@@ -183,16 +174,14 @@
         🔥 <a href="https://shaansaura.github.io/shaans-super-aura/" target="_blank">Shaans Aura Super OS</a><br><br>
         Always happy to connect with fellow builders. 😎
       </div>
-      <div class=<form class="contact-form" action="https://formspree.io/f/xxxxxxxx" method="POST">
-  <input type="text" name="name" placeholder="your name" required>
-  <input type="email" name="email" placeholder="your email" required>
-  <textarea rows="4" name="message" placeholder="your message" required></textarea>
-  <button class="btn-primary" type="submit">send message</button>
-</form>>
-        <input type="text" placeholder="your name">
-        <input type="text" placeholder="your email">
-        <textarea rows="4" placeholder="your message"></textarea>
-        <button class="btn-primary">send message</button>
+      <div>
+        <div class="success-msg" id="success-msg">✅ Message sent! I'll get back to you soon.</div>
+        <form class="contact-form" id="contact-form">
+          <input type="text" name="name" placeholder="your name" required>
+          <input type="email" name="email" placeholder="your email" required>
+          <textarea rows="4" name="message" placeholder="your message" required></textarea>
+          <button class="btn-primary" type="submit" id="submit-btn">send message</button>
+        </form>
       </div>
     </div>
   </div>
@@ -200,6 +189,8 @@
   <footer>built by shaan &middot; shaansaura.github.io &middot; 2026</footer>
 
 </div>
+
+<canvas id="bg"></canvas>
 
 <script>
   const c = document.getElementById('bg');
@@ -220,7 +211,36 @@
   }
   setInterval(draw, 50);
   window.addEventListener('resize', () => { c.width = window.innerWidth; c.height = window.innerHeight; });
-  function scrollTo(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); }
+  function goTo(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); }
+
+  // Formspree contact form
+  const form = document.getElementById('contact-form');
+  const btn = document.getElementById('submit-btn');
+  const successMsg = document.getElementById('success-msg');
+
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    btn.textContent = 'sending...';
+    btn.disabled = true;
+    const data = new FormData(form);
+    try {
+      const res = await fetch('https://formspree.io/f/mojyrpop', {
+        method: 'POST',
+        body: data,
+        headers: { 'Accept': 'application/json' }
+      });
+      if (res.ok) {
+        form.style.display = 'none';
+        successMsg.style.display = 'block';
+      } else {
+        btn.textContent = 'error — try again';
+        btn.disabled = false;
+      }
+    } catch(err) {
+      btn.textContent = 'error — try again';
+      btn.disabled = false;
+    }
+  });
 </script>
 </body>
 </html>
