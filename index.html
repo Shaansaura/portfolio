@@ -5,59 +5,96 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Shaan — Portfolio</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Courier New', monospace; background: #0a0a0a; color: #e0e0e0; }
+    * { box-sizing: border-box; margin: 0; padding: 0; transition: background 0.3s, color 0.3s; }
+
+    :root {
+      --bg: #0a0a0a; --bg2: #111; --bg3: #1a1a1a;
+      --text: #e0e0e0; --text2: #888; --text3: #555;
+      --border: #2a2a2a; --accent: #22c55e;
+    }
+    .light {
+      --bg: #f8f8f8; --bg2: #fff; --bg3: #f0f0f0;
+      --text: #111; --text2: #555; --text3: #999;
+      --border: #e0e0e0; --accent: #16a34a;
+    }
+
+    body { font-family: 'Courier New', monospace; background: var(--bg); color: var(--text); }
     canvas#bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.07; pointer-events: none; z-index: 0; }
-    .scanline { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: repeating-linear-gradient(to bottom, transparent 0px, transparent 3px, rgba(0,0,0,0.05) 3px, rgba(0,0,0,0.05) 4px); pointer-events: none; z-index: 999; }
+    .scanline { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: repeating-linear-gradient(to bottom, transparent 0px, transparent 3px, rgba(0,0,0,0.04) 3px, rgba(0,0,0,0.04) 4px); pointer-events: none; z-index: 999; }
     .content { position: relative; z-index: 1; }
-    nav { display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 2rem; border-bottom: 0.5px solid #2a2a2a; background: rgba(10,10,10,0.95); position: sticky; top: 0; z-index: 10; }
-    .nav-logo { color: #22c55e; font-size: 15px; }
-    .nav-links { display: flex; gap: 1.5rem; }
-    .nav-links a { color: #888; font-size: 12px; text-decoration: none; cursor: pointer; transition: color .2s; }
-    .nav-links a:hover { color: #22c55e; }
-    .hero { padding: 5rem 2rem 4rem; text-align: center; border-bottom: 0.5px solid #1a1a1a; }
-    .hero-tag { font-size: 12px; color: #22c55e; border: 0.5px solid #22c55e; display: inline-block; padding: 4px 14px; border-radius: 20px; margin-bottom: 1.5rem; }
-    .hero h1 { font-size: 42px; font-weight: 500; color: #fff; margin-bottom: 1rem; line-height: 1.2; }
-    .hero h1 span.green { color: #22c55e; }
-    .cursor { display: inline-block; width: 3px; height: 1em; background: #22c55e; animation: blink .7s infinite; vertical-align: text-bottom; margin-left: 2px; }
+
+    nav { display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 2rem; border-bottom: 0.5px solid var(--border); background: var(--bg); position: sticky; top: 0; z-index: 10; }
+    .nav-logo { color: var(--accent); font-size: 15px; }
+    .nav-links { display: flex; gap: 1.5rem; align-items: center; }
+    .nav-links a { color: var(--text2); font-size: 12px; text-decoration: none; cursor: pointer; transition: color .2s; }
+    .nav-links a:hover { color: var(--accent); }
+    .theme-btn { background: transparent; border: 0.5px solid var(--border); color: var(--text2); padding: 5px 10px; border-radius: var(--border-radius-md, 8px); font-family: 'Courier New', monospace; font-size: 12px; cursor: pointer; transition: all .2s; }
+    .theme-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    .hero { padding: 5rem 2rem 4rem; text-align: center; border-bottom: 0.5px solid var(--border); }
+    .hero-tag { font-size: 12px; color: var(--accent); border: 0.5px solid var(--accent); display: inline-block; padding: 4px 14px; border-radius: 20px; margin-bottom: 1.5rem; }
+    .hero h1 { font-size: 42px; font-weight: 500; color: var(--text); margin-bottom: 1rem; line-height: 1.2; }
+    .hero h1 span.green { color: var(--accent); }
+    .typed-wrap { font-size: 16px; color: var(--text2); margin-bottom: 2rem; min-height: 28px; }
+    .typed-text { color: var(--accent); }
+    .cursor { display: inline-block; width: 2px; height: 1em; background: var(--accent); animation: blink .7s infinite; vertical-align: text-bottom; margin-left: 1px; }
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
-    .hero-sub { font-size: 14px; color: #666; max-width: 480px; margin: 0 auto 2rem; line-height: 1.9; }
+    .hero-sub { font-size: 14px; color: var(--text2); max-width: 480px; margin: 0 auto 2rem; line-height: 1.9; }
     .hero-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-    .btn-primary { background: transparent; color: #22c55e; border: 0.5px solid #22c55e; padding: 10px 24px; font-family: 'Courier New', monospace; font-size: 13px; border-radius: 6px; cursor: pointer; transition: all .2s; }
-.btn-primary:hover { background: #22c55e; color: #0a0a0a; }
-    .btn-primary:hover { opacity: .85; }
-    .btn-secondary { background: transparent; color: #22c55e; border: 0.5px solid #22c55e; padding: 10px 24px; font-family: 'Courier New', monospace; font-size: 13px; border-radius: 6px; cursor: pointer; transition: background .2s; }
-    .btn-secondary:hover { background: rgba(34,197,94,.08); }
-    .section { padding: 4rem 2rem; border-bottom: 0.5px solid #1a1a1a; max-width: 860px; margin: 0 auto; }
-    .section-tag { font-size: 11px; color: #22c55e; letter-spacing: 2px; text-transform: uppercase; margin-bottom: .5rem; }
-    .section-title { font-size: 24px; font-weight: 500; color: #fff; margin-bottom: 2rem; }
+
+    .btn-primary { background: transparent; color: var(--accent); border: 0.5px solid var(--accent); padding: 10px 24px; font-family: 'Courier New', monospace; font-size: 13px; border-radius: 6px; cursor: pointer; transition: all .2s; }
+    .btn-primary:hover { background: var(--accent); color: #0a0a0a; }
+    .btn-secondary { background: transparent; color: var(--text2); border: 0.5px solid var(--border); padding: 10px 24px; font-family: 'Courier New', monospace; font-size: 13px; border-radius: 6px; cursor: pointer; transition: all .2s; }
+    .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+    .section { padding: 4rem 2rem; border-bottom: 0.5px solid var(--border); max-width: 860px; margin: 0 auto; }
+    .section-tag { font-size: 11px; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; margin-bottom: .5rem; }
+    .section-title { font-size: 24px; font-weight: 500; color: var(--text); margin-bottom: 2rem; }
+
     .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
-    .about-text { font-size: 13px; color: #888; line-height: 2.1; }
+    .about-text { font-size: 13px; color: var(--text2); line-height: 2.1; }
     .stat-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-top: 1.5rem; }
-    .stat { background: #111; border: 0.5px solid #2a2a2a; border-radius: 8px; padding: 1rem; text-align: center; }
-    .stat-num { font-size: 26px; color: #22c55e; font-weight: 500; }
-    .stat-label { font-size: 11px; color: #555; margin-top: 4px; }
+    .stat { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 8px; padding: 1rem; text-align: center; }
+    .stat-num { font-size: 26px; color: var(--accent); font-weight: 500; }
+    .stat-label { font-size: 11px; color: var(--text3); margin-top: 4px; }
+
     .skills-wrap { display: flex; flex-wrap: wrap; gap: 8px; }
-    .skill { background: #111; border: 0.5px solid #2a2a2a; color: #aaa; font-size: 12px; padding: 6px 14px; border-radius: 20px; transition: border-color .2s, color .2s; cursor: default; }
-    .skill:hover { border-color: #22c55e; color: #22c55e; }
+    .skill { background: var(--bg2); border: 0.5px solid var(--border); color: var(--text2); font-size: 12px; padding: 6px 14px; border-radius: 20px; transition: border-color .2s, color .2s; cursor: default; }
+    .skill:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* timeline */
+    .timeline { position: relative; padding-left: 2rem; }
+    .timeline::before { content: ''; position: absolute; left: 6px; top: 0; bottom: 0; width: 1px; background: var(--border); }
+    .tl-item { position: relative; margin-bottom: 2rem; }
+    .tl-dot { position: absolute; left: -2rem; top: 4px; width: 12px; height: 12px; border-radius: 50%; background: var(--accent); border: 2px solid var(--bg); box-shadow: 0 0 0 1px var(--accent); }
+    .tl-date { font-size: 11px; color: var(--accent); letter-spacing: 1px; margin-bottom: 4px; }
+    .tl-title { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+    .tl-desc { font-size: 12px; color: var(--text2); line-height: 1.7; }
+
     .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
-    .project-card { background: #111; border: 0.5px solid #2a2a2a; border-radius: 10px; padding: 1.5rem; transition: border-color .2s, transform .2s; cursor: pointer; }
-    .project-card:hover { border-color: #22c55e; transform: translateY(-3px); }
+    .project-card { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 10px; padding: 1.5rem; transition: border-color .2s, transform .2s; cursor: pointer; }
+    .project-card:hover { border-color: var(--accent); transform: translateY(-3px); }
     .project-emoji { font-size: 26px; margin-bottom: .75rem; }
-    .project-name { font-size: 14px; font-weight: 500; color: #fff; margin-bottom: .5rem; }
-    .project-desc { font-size: 12px; color: #666; line-height: 1.8; margin-bottom: 1rem; }
+    .project-name { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: .5rem; }
+    .project-desc { font-size: 12px; color: var(--text2); line-height: 1.8; margin-bottom: 1rem; }
     .project-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-    .project-tag { font-size: 10px; background: #1a1a1a; color: #22c55e; border: 0.5px solid rgba(34,197,94,.2); padding: 3px 8px; border-radius: 4px; }
+    .project-tag { font-size: 10px; background: var(--bg3); color: var(--accent); border: 0.5px solid var(--border); padding: 3px 8px; border-radius: 4px; }
+    .project-status { font-size: 10px; padding: 3px 8px; border-radius: 4px; display: inline-block; margin-bottom: .75rem; }
+    .status-live { background: rgba(34,197,94,.1); color: var(--accent); border: 0.5px solid var(--accent); }
+    .status-soon { background: var(--bg3); color: var(--text3); border: 0.5px solid var(--border); }
+
     .contact-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
-    .contact-info { font-size: 13px; color: #888; line-height: 2.4; }
-    .contact-info a { color: #22c55e; text-decoration: none; }
+    .contact-info { font-size: 13px; color: var(--text2); line-height: 2.4; }
+    .contact-info a { color: var(--accent); text-decoration: none; }
     .contact-info a:hover { text-decoration: underline; }
     .contact-form { display: flex; flex-direction: column; gap: 10px; }
-    .contact-form input, .contact-form textarea { background: #111; border: 0.5px solid #2a2a2a; color: #e0e0e0; font-family: 'Courier New', monospace; font-size: 12px; padding: 10px 12px; border-radius: 6px; outline: none; transition: border-color .2s; resize: none; }
-    .contact-form input:focus, .contact-form textarea:focus { border-color: #22c55e; }
-    .contact-form input::placeholder, .contact-form textarea::placeholder { color: #444; }
-    .success-msg { display: none; background: rgba(34,197,94,.1); border: 0.5px solid #22c55e; color: #22c55e; padding: 12px; border-radius: 6px; font-size: 13px; text-align: center; }
-    footer { text-align: center; padding: 2rem; font-size: 11px; color: #333; }
+    .contact-form input, .contact-form textarea { background: var(--bg2); border: 0.5px solid var(--border); color: var(--text); font-family: 'Courier New', monospace; font-size: 12px; padding: 10px 12px; border-radius: 6px; outline: none; transition: border-color .2s; resize: none; }
+    .contact-form input:focus, .contact-form textarea:focus { border-color: var(--accent); }
+    .contact-form input::placeholder, .contact-form textarea::placeholder { color: var(--text3); }
+    .success-msg { display: none; background: rgba(34,197,94,.1); border: 0.5px solid var(--accent); color: var(--accent); padding: 12px; border-radius: 6px; font-size: 13px; text-align: center; }
+
+    footer { text-align: center; padding: 2rem; font-size: 11px; color: var(--text3); border-top: 0.5px solid var(--border); }
+
     @media (max-width: 600px) {
       .hero h1 { font-size: 28px; }
       .about-grid, .contact-wrap { grid-template-columns: 1fr; }
@@ -76,14 +113,17 @@
     <div class="nav-links">
       <a onclick="goTo('about')">about</a>
       <a onclick="goTo('skills')">skills</a>
+      <a onclick="goTo('timeline')">journey</a>
       <a onclick="goTo('projects')">projects</a>
       <a onclick="goTo('contact')">contact</a>
+      <button class="theme-btn" onclick="toggleTheme()" id="theme-btn">☀️ light</button>
     </div>
   </nav>
 
   <div class="hero">
     <div class="hero-tag">available for collabs</div>
     <h1>Hi, I'm <span class="green">Shaan</span><span class="cursor"></span></h1>
+    <div class="typed-wrap">I'm a <span class="typed-text" id="typed"></span><span class="cursor"></span></div>
     <p class="hero-sub">A self-taught developer building cool things on the internet. Creator of Shaans Aura Super OS and lover of dark themes. 🔥</p>
     <div class="hero-btns">
       <button class="btn-primary" onclick="goTo('projects')">See my work</button>
@@ -120,10 +160,42 @@
       <div class="skill">localStorage</div>
       <div class="skill">Terminal UIs</div>
       <div class="skill">Canvas API</div>
+      <div class="skill">Linux Terminal</div>
       <div class="skill">Responsive Design</div>
       <div class="skill">Game Logic</div>
       <div class="skill">Dark Mode 🌙</div>
       <div class="skill">Vibe Coding 🔥</div>
+    </div>
+  </div>
+
+  <div class="section" id="timeline">
+    <div class="section-tag">// my journey</div>
+    <div class="section-title">How I got here</div>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-date">EARLY 2026</div>
+        <div class="tl-title">Started coding 🌱</div>
+        <div class="tl-desc">Wrote my first lines of HTML and JavaScript. Built a simple terminal called Shaan OS with just 2 commands.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-date">APRIL 2026</div>
+        <div class="tl-title">Shaans Aura Super OS launched 🔥</div>
+        <div class="tl-desc">Built a full terminal OS with multi-user login, matrix rain, RPG game, live weather, themes and more. Deployed live on GitHub Pages.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-date">APRIL 2026</div>
+        <div class="tl-title">Portfolio website 🚀</div>
+        <div class="tl-desc">Designed and built this portfolio from scratch with animations, a working contact form and dark/light mode.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-date">COMING SOON</div>
+        <div class="tl-title">What's next? 👀</div>
+        <div class="tl-desc">Learning more every day. The next project is going to be even bigger. Stay tuned...</div>
+      </div>
     </div>
   </div>
 
@@ -132,6 +204,7 @@
     <div class="section-title">Things I've built</div>
     <div class="projects-grid">
       <div class="project-card" onclick="window.open('https://shaansaura.github.io/shaans-super-aura/')">
+        <div class="project-status status-live">● live</div>
         <div class="project-emoji">🔥</div>
         <div class="project-name">Shaans Aura Super OS</div>
         <div class="project-desc">A full terminal OS in the browser with multi-user login, RPG game, live weather, matrix rain and 5 colour themes.</div>
@@ -143,6 +216,7 @@
         </div>
       </div>
       <div class="project-card" onclick="window.open('https://shaansaura.github.io/shaan-os/')">
+        <div class="project-status status-live">● live</div>
         <div class="project-emoji">💻</div>
         <div class="project-name">Shaan OS v1</div>
         <div class="project-desc">The original web terminal that started it all. A simple command-line interface with custom commands.</div>
@@ -152,13 +226,23 @@
         </div>
       </div>
       <div class="project-card" onclick="window.open('https://shaansaura.github.io/portfolio/')">
-        <div class="project-emoji">🚀</div>
+        <div class="project-status status-live">● live</div>
+        <div class="project-emoji">🌐</div>
         <div class="project-name">Portfolio</div>
-        <div class="project-desc">This very site! A dark techy portfolio with matrix rain, smooth scrolling and a working contact form.</div>
+        <div class="project-desc">This very site! Dark techy portfolio with matrix rain, typing animation, timeline and working contact form.</div>
         <div class="project-tags">
           <span class="project-tag">HTML</span>
           <span class="project-tag">CSS</span>
           <span class="project-tag">Formspree</span>
+        </div>
+      </div>
+      <div class="project-card">
+        <div class="project-status status-soon">○ coming soon</div>
+        <div class="project-emoji">🚀</div>
+        <div class="project-name">Next Project</div>
+        <div class="project-desc">Something epic is in the works. The best is always yet to be built. 👀</div>
+        <div class="project-tags">
+          <span class="project-tag">???</span>
         </div>
       </div>
     </div>
@@ -191,7 +275,6 @@
 
 </div>
 
-
 <script>
   const c = document.getElementById('bg');
   const cx = c.getContext('2d');
@@ -213,33 +296,47 @@
   window.addEventListener('resize', () => { c.width = window.innerWidth; c.height = window.innerHeight; });
   function goTo(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); }
 
-  // Formspree contact form
+  // dark/light toggle
+  let isLight = false;
+  function toggleTheme() {
+    isLight = !isLight;
+    document.body.classList.toggle('light', isLight);
+    document.getElementById('theme-btn').textContent = isLight ? '🌙 dark' : '☀️ light';
+  }
+
+  // typing animation
+  const phrases = ['self-taught developer.', 'terminal builder.', 'vibe coder. 🔥', 'Sydney based. 🇦🇺', 'open to collabs.'];
+  let pi = 0, ci = 0, deleting = false;
+  const typedEl = document.getElementById('typed');
+  function type() {
+    const word = phrases[pi];
+    if (!deleting) {
+      typedEl.textContent = word.slice(0, ++ci);
+      if (ci === word.length) { deleting = true; setTimeout(type, 1800); return; }
+    } else {
+      typedEl.textContent = word.slice(0, --ci);
+      if (ci === 0) { deleting = false; pi = (pi + 1) % phrases.length; }
+    }
+    setTimeout(type, deleting ? 60 : 90);
+  }
+  type();
+
+  // contact form
   const form = document.getElementById('contact-form');
   const btn = document.getElementById('submit-btn');
   const successMsg = document.getElementById('success-msg');
-
   form.addEventListener('submit', async function(e) {
     e.preventDefault();
     btn.textContent = 'sending...';
     btn.disabled = true;
-    const data = new FormData(form);
     try {
       const res = await fetch('https://formspree.io/f/mojyrpop', {
-        method: 'POST',
-        body: data,
+        method: 'POST', body: new FormData(form),
         headers: { 'Accept': 'application/json' }
       });
-      if (res.ok) {
-        form.style.display = 'none';
-        successMsg.style.display = 'block';
-      } else {
-        btn.textContent = 'error — try again';
-        btn.disabled = false;
-      }
-    } catch(err) {
-      btn.textContent = 'error — try again';
-      btn.disabled = false;
-    }
+      if (res.ok) { form.style.display = 'none'; successMsg.style.display = 'block'; }
+      else { btn.textContent = 'error — try again'; btn.disabled = false; }
+    } catch(e) { btn.textContent = 'error — try again'; btn.disabled = false; }
   });
 </script>
 </body>
