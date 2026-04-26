@@ -5,109 +5,129 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Shaan — Portfolio</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; transition: background 0.3s, color 0.3s; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --bg:#0a0a0a;--bg2:#111;--bg3:#1a1a1a;--text:#e0e0e0;--text2:#888;--text3:#555;--border:#2a2a2a;--accent:#22c55e; }
+    .light { --bg:#f8f8f8;--bg2:#fff;--bg3:#f0f0f0;--text:#111;--text2:#555;--text3:#999;--border:#e0e0e0;--accent:#16a34a; }
+    body { font-family:'Courier New',monospace;background:var(--bg);color:var(--text);transition:background .3s,color .3s;overflow-x:hidden; }
 
-    :root {
-      --bg: #0a0a0a; --bg2: #111; --bg3: #1a1a1a;
-      --text: #e0e0e0; --text2: #888; --text3: #555;
-      --border: #2a2a2a; --accent: #22c55e;
-    }
-    .light {
-      --bg: #f8f8f8; --bg2: #fff; --bg3: #f0f0f0;
-      --text: #111; --text2: #555; --text3: #999;
-      --border: #e0e0e0; --accent: #16a34a;
-    }
+    /* loading screen */
+    #loader { position:fixed;top:0;left:0;width:100%;height:100%;background:#0a0a0a;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .6s; }
+    #loader-title { font-size:22px;color:#22c55e;margin-bottom:20px;letter-spacing:3px; }
+    #loader-bar-wrap { width:240px;height:3px;background:#1a1a1a;border-radius:4px;overflow:hidden; }
+    #loader-bar { height:100%;width:0%;background:#22c55e;transition:width .05s linear;box-shadow:0 0 8px #22c55e; }
+    #loader-pct { font-size:12px;color:#555;margin-top:10px; }
 
-    body { font-family: 'Courier New', monospace; background: var(--bg); color: var(--text); }
-    canvas#bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.07; pointer-events: none; z-index: 0; }
-    .scanline { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: repeating-linear-gradient(to bottom, transparent 0px, transparent 3px, rgba(0,0,0,0.04) 3px, rgba(0,0,0,0.04) 4px); pointer-events: none; z-index: 999; }
-    .content { position: relative; z-index: 1; }
+    canvas#bg { position:fixed;top:0;left:0;width:100%;height:100%;opacity:0.07;pointer-events:none;z-index:0; }
+    #particles { position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:998; }
+    .scanline { position:fixed;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(to bottom,transparent 0px,transparent 3px,rgba(0,0,0,0.04) 3px,rgba(0,0,0,0.04) 4px);pointer-events:none;z-index:997; }
+    .content { position:relative;z-index:1; }
 
-    nav { display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 2rem; border-bottom: 0.5px solid var(--border); background: var(--bg); position: sticky; top: 0; z-index: 10; }
-    .nav-logo { color: var(--accent); font-size: 15px; }
-    .nav-links { display: flex; gap: 1.5rem; align-items: center; }
-    .nav-links a { color: var(--text2); font-size: 12px; text-decoration: none; cursor: pointer; transition: color .2s; }
-    .nav-links a:hover { color: var(--accent); }
-    .theme-btn { background: transparent; border: 0.5px solid var(--border); color: var(--text2); padding: 5px 10px; border-radius: var(--border-radius-md, 8px); font-family: 'Courier New', monospace; font-size: 12px; cursor: pointer; transition: all .2s; }
-    .theme-btn:hover { border-color: var(--accent); color: var(--accent); }
+    nav { display:flex;justify-content:space-between;align-items:center;padding:1.2rem 2rem;border-bottom:0.5px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:10;transition:background .3s; }
+    .nav-logo { color:var(--accent);font-size:15px; }
+    .nav-links { display:flex;gap:1.2rem;align-items:center;flex-wrap:wrap; }
+    .nav-links a { color:var(--text2);font-size:12px;text-decoration:none;cursor:pointer;transition:color .2s; }
+    .nav-links a:hover { color:var(--accent); }
+    .theme-btn { background:transparent;border:0.5px solid var(--border);color:var(--text2);padding:5px 10px;border-radius:6px;font-family:'Courier New',monospace;font-size:12px;cursor:pointer;transition:all .2s; }
+    .theme-btn:hover { border-color:var(--accent);color:var(--accent); }
 
-    .hero { padding: 5rem 2rem 4rem; text-align: center; border-bottom: 0.5px solid var(--border); }
-    .hero-tag { font-size: 12px; color: var(--accent); border: 0.5px solid var(--accent); display: inline-block; padding: 4px 14px; border-radius: 20px; margin-bottom: 1.5rem; }
-    .hero h1 { font-size: 42px; font-weight: 500; color: var(--text); margin-bottom: 1rem; line-height: 1.2; }
-    .hero h1 span.green { color: var(--accent); }
-    .typed-wrap { font-size: 16px; color: var(--text2); margin-bottom: 2rem; min-height: 28px; }
-    .typed-text { color: var(--accent); }
-    .cursor { display: inline-block; width: 2px; height: 1em; background: var(--accent); animation: blink .7s infinite; vertical-align: text-bottom; margin-left: 1px; }
-    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
-    .hero-sub { font-size: 14px; color: var(--text2); max-width: 480px; margin: 0 auto 2rem; line-height: 1.9; }
-    .hero-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    /* fade in sections */
+    .fade-section { opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease; }
+    .fade-section.visible { opacity:1;transform:translateY(0); }
 
-    .btn-primary { background: transparent; color: var(--accent); border: 0.5px solid var(--accent); padding: 10px 24px; font-family: 'Courier New', monospace; font-size: 13px; border-radius: 6px; cursor: pointer; transition: all .2s; }
-    .btn-primary:hover { background: var(--accent); color: #0a0a0a; }
-    .btn-secondary { background: transparent; color: var(--text2); border: 0.5px solid var(--border); padding: 10px 24px; font-family: 'Courier New', monospace; font-size: 13px; border-radius: 6px; cursor: pointer; transition: all .2s; }
-    .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+    .hero { padding:5rem 2rem 4rem;text-align:center;border-bottom:0.5px solid var(--border); }
+    .hero-tag { font-size:12px;color:var(--accent);border:0.5px solid var(--accent);display:inline-block;padding:4px 14px;border-radius:20px;margin-bottom:1.5rem; }
+    .hero h1 { font-size:42px;font-weight:500;color:var(--text);margin-bottom:1rem;line-height:1.2; }
+    .hero h1 span.green { color:var(--accent); }
+    .typed-wrap { font-size:16px;color:var(--text2);margin-bottom:2rem;min-height:28px; }
+    .typed-text { color:var(--accent); }
+    .cursor { display:inline-block;width:2px;height:1em;background:var(--accent);animation:blink .7s infinite;vertical-align:text-bottom;margin-left:1px; }
+    @keyframes blink { 0%,100%{opacity:1}50%{opacity:0} }
+    .hero-sub { font-size:14px;color:var(--text2);max-width:480px;margin:0 auto 2rem;line-height:1.9; }
+    .hero-btns { display:flex;gap:12px;justify-content:center;flex-wrap:wrap; }
+    .btn-primary { background:transparent;color:var(--accent);border:0.5px solid var(--accent);padding:10px 24px;font-family:'Courier New',monospace;font-size:13px;border-radius:6px;cursor:pointer;transition:all .2s; }
+    .btn-primary:hover { background:var(--accent);color:#0a0a0a; }
+    .btn-secondary { background:transparent;color:var(--text2);border:0.5px solid var(--border);padding:10px 24px;font-family:'Courier New',monospace;font-size:13px;border-radius:6px;cursor:pointer;transition:all .2s; }
+    .btn-secondary:hover { border-color:var(--accent);color:var(--accent); }
 
-    .section { padding: 4rem 2rem; border-bottom: 0.5px solid var(--border); max-width: 860px; margin: 0 auto; }
-    .section-tag { font-size: 11px; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; margin-bottom: .5rem; }
-    .section-title { font-size: 24px; font-weight: 500; color: var(--text); margin-bottom: 2rem; }
+    .section { padding:4rem 2rem;border-bottom:0.5px solid var(--border);max-width:860px;margin:0 auto; }
+    .section-tag { font-size:11px;color:var(--accent);letter-spacing:2px;text-transform:uppercase;margin-bottom:.5rem; }
+    .section-title { font-size:24px;font-weight:500;color:var(--text);margin-bottom:2rem; }
+    .about-grid { display:grid;grid-template-columns:1fr 1fr;gap:2rem; }
+    .about-text { font-size:13px;color:var(--text2);line-height:2.1; }
+    .stat-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:1.5rem; }
+    .stat { background:var(--bg2);border:0.5px solid var(--border);border-radius:8px;padding:1rem;text-align:center; }
+    .stat-num { font-size:26px;color:var(--accent);font-weight:500; }
+    .stat-label { font-size:11px;color:var(--text3);margin-top:4px; }
 
-    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
-    .about-text { font-size: 13px; color: var(--text2); line-height: 2.1; }
-    .stat-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-top: 1.5rem; }
-    .stat { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 8px; padding: 1rem; text-align: center; }
-    .stat-num { font-size: 26px; color: var(--accent); font-weight: 500; }
-    .stat-label { font-size: 11px; color: var(--text3); margin-top: 4px; }
+    /* skill bars */
+    .skill-bar-wrap { margin-bottom:14px; }
+    .skill-bar-label { display:flex;justify-content:space-between;font-size:12px;color:var(--text2);margin-bottom:5px; }
+    .skill-bar-track { background:var(--bg3);border-radius:4px;height:6px;overflow:hidden; }
+    .skill-bar-fill { height:100%;background:var(--accent);border-radius:4px;width:0%;transition:width 1.2s ease; }
 
-    .skills-wrap { display: flex; flex-wrap: wrap; gap: 8px; }
-    .skill { background: var(--bg2); border: 0.5px solid var(--border); color: var(--text2); font-size: 12px; padding: 6px 14px; border-radius: 20px; transition: border-color .2s, color .2s; cursor: default; }
-    .skill:hover { border-color: var(--accent); color: var(--accent); }
+    .timeline { position:relative;padding-left:2rem; }
+    .timeline::before { content:'';position:absolute;left:6px;top:0;bottom:0;width:1px;background:var(--border); }
+    .tl-item { position:relative;margin-bottom:2rem; }
+    .tl-dot { position:absolute;left:-2rem;top:4px;width:12px;height:12px;border-radius:50%;background:var(--accent);border:2px solid var(--bg);box-shadow:0 0 0 1px var(--accent); }
+    .tl-date { font-size:11px;color:var(--accent);letter-spacing:1px;margin-bottom:4px; }
+    .tl-title { font-size:14px;font-weight:500;color:var(--text);margin-bottom:4px; }
+    .tl-desc { font-size:12px;color:var(--text2);line-height:1.7; }
 
-    /* timeline */
-    .timeline { position: relative; padding-left: 2rem; }
-    .timeline::before { content: ''; position: absolute; left: 6px; top: 0; bottom: 0; width: 1px; background: var(--border); }
-    .tl-item { position: relative; margin-bottom: 2rem; }
-    .tl-dot { position: absolute; left: -2rem; top: 4px; width: 12px; height: 12px; border-radius: 50%; background: var(--accent); border: 2px solid var(--bg); box-shadow: 0 0 0 1px var(--accent); }
-    .tl-date { font-size: 11px; color: var(--accent); letter-spacing: 1px; margin-bottom: 4px; }
-    .tl-title { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
-    .tl-desc { font-size: 12px; color: var(--text2); line-height: 1.7; }
+    .projects-grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px; }
+    .project-card { background:var(--bg2);border:0.5px solid var(--border);border-radius:10px;padding:1.5rem;transition:border-color .2s,transform .2s;cursor:pointer; }
+    .project-card:hover { border-color:var(--accent);transform:translateY(-3px); }
+    .project-emoji { font-size:26px;margin-bottom:.75rem; }
+    .project-name { font-size:14px;font-weight:500;color:var(--text);margin-bottom:.5rem; }
+    .project-desc { font-size:12px;color:var(--text2);line-height:1.8;margin-bottom:1rem; }
+    .project-tags { display:flex;flex-wrap:wrap;gap:6px; }
+    .project-tag { font-size:10px;background:var(--bg3);color:var(--accent);border:0.5px solid var(--border);padding:3px 8px;border-radius:4px; }
+    .project-status { font-size:10px;padding:3px 8px;border-radius:4px;display:inline-block;margin-bottom:.75rem; }
+    .status-live { background:rgba(34,197,94,.1);color:var(--accent);border:0.5px solid var(--accent); }
+    .status-soon { background:var(--bg3);color:var(--text3);border:0.5px solid var(--border); }
 
-    .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
-    .project-card { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 10px; padding: 1.5rem; transition: border-color .2s, transform .2s; cursor: pointer; }
-    .project-card:hover { border-color: var(--accent); transform: translateY(-3px); }
-    .project-emoji { font-size: 26px; margin-bottom: .75rem; }
-    .project-name { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: .5rem; }
-    .project-desc { font-size: 12px; color: var(--text2); line-height: 1.8; margin-bottom: 1rem; }
-    .project-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-    .project-tag { font-size: 10px; background: var(--bg3); color: var(--accent); border: 0.5px solid var(--border); padding: 3px 8px; border-radius: 4px; }
-    .project-status { font-size: 10px; padding: 3px 8px; border-radius: 4px; display: inline-block; margin-bottom: .75rem; }
-    .status-live { background: rgba(34,197,94,.1); color: var(--accent); border: 0.5px solid var(--accent); }
-    .status-soon { background: var(--bg3); color: var(--text3); border: 0.5px solid var(--border); }
+    /* ebook */
+    .ebook-wrap { background:var(--bg2);border:0.5px solid var(--border);border-radius:12px;overflow:hidden; }
+    .ebook-tabs { display:flex;border-bottom:0.5px solid var(--border);overflow-x:auto; }
+    .ebook-tab { padding:10px 18px;font-size:12px;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap; }
+    .ebook-tab.active { color:var(--accent);border-bottom-color:var(--accent); }
+    .ebook-page { display:none;padding:1.5rem;font-size:13px;color:var(--text2);line-height:2;min-height:200px; }
+    .ebook-page.active { display:block; }
+    .ebook-page h3 { font-size:16px;color:var(--text);margin-bottom:1rem;font-weight:500; }
+    .ebook-page p { margin-bottom:1rem; }
+    .ebook-nav { display:flex;justify-content:space-between;padding:.75rem 1.5rem;border-top:0.5px solid var(--border); }
 
-    .contact-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
-    .contact-info { font-size: 13px; color: var(--text2); line-height: 2.4; }
-    .contact-info a { color: var(--accent); text-decoration: none; }
-    .contact-info a:hover { text-decoration: underline; }
-    .contact-form { display: flex; flex-direction: column; gap: 10px; }
-    .contact-form input, .contact-form textarea { background: var(--bg2); border: 0.5px solid var(--border); color: var(--text); font-family: 'Courier New', monospace; font-size: 12px; padding: 10px 12px; border-radius: 6px; outline: none; transition: border-color .2s; resize: none; }
-    .contact-form input:focus, .contact-form textarea:focus { border-color: var(--accent); }
-    .contact-form input::placeholder, .contact-form textarea::placeholder { color: var(--text3); }
-    .success-msg { display: none; background: rgba(34,197,94,.1); border: 0.5px solid var(--accent); color: var(--accent); padding: 12px; border-radius: 6px; font-size: 13px; text-align: center; }
+    .contact-wrap { display:grid;grid-template-columns:1fr 1fr;gap:2rem; }
+    .contact-info { font-size:13px;color:var(--text2);line-height:2.4; }
+    .contact-info a { color:var(--accent);text-decoration:none; }
+    .contact-info a:hover { text-decoration:underline; }
+    .contact-form { display:flex;flex-direction:column;gap:10px; }
+    .contact-form input,.contact-form textarea { background:var(--bg2);border:0.5px solid var(--border);color:var(--text);font-family:'Courier New',monospace;font-size:12px;padding:10px 12px;border-radius:6px;outline:none;transition:border-color .2s;resize:none; }
+    .contact-form input:focus,.contact-form textarea:focus { border-color:var(--accent); }
+    .contact-form input::placeholder,.contact-form textarea::placeholder { color:var(--text3); }
+    .success-msg { display:none;background:rgba(34,197,94,.1);border:0.5px solid var(--accent);color:var(--accent);padding:12px;border-radius:6px;font-size:13px;text-align:center; }
+    footer { text-align:center;padding:2rem;font-size:11px;color:var(--text3);border-top:0.5px solid var(--border); }
 
-    footer { text-align: center; padding: 2rem; font-size: 11px; color: var(--text3); border-top: 0.5px solid var(--border); }
-
-    @media (max-width: 600px) {
-      .hero h1 { font-size: 28px; }
-      .about-grid, .contact-wrap { grid-template-columns: 1fr; }
+    @media(max-width:600px){
+      .hero h1{font-size:28px;}
+      .about-grid,.contact-wrap{grid-template-columns:1fr;}
+      .nav-links{gap:.8rem;}
     }
   </style>
 </head>
 <body>
 
+<!-- loader -->
+<div id="loader">
+  <div id="loader-title">&gt; SHAAN.DEV</div>
+  <div id="loader-bar-wrap"><div id="loader-bar"></div></div>
+  <div id="loader-pct">0%</div>
+</div>
+
 <canvas id="bg"></canvas>
+<canvas id="particles"></canvas>
 <div class="scanline"></div>
 
 <div class="content">
-
   <nav>
     <div class="nav-logo">&gt; shaansaura.dev</div>
     <div class="nav-links">
@@ -115,12 +135,13 @@
       <a onclick="goTo('skills')">skills</a>
       <a onclick="goTo('timeline')">journey</a>
       <a onclick="goTo('projects')">projects</a>
+      <a onclick="goTo('ebook')">about me</a>
       <a onclick="goTo('contact')">contact</a>
       <button class="theme-btn" onclick="toggleTheme()" id="theme-btn">☀️ light</button>
     </div>
   </nav>
 
-  <div class="hero">
+  <div class="hero fade-section">
     <div class="hero-tag">available for collabs</div>
     <h1>Hi, I'm <span class="green">Shaan</span><span class="cursor"></span></h1>
     <div class="typed-wrap">I'm a <span class="typed-text" id="typed"></span><span class="cursor"></span></div>
@@ -131,13 +152,13 @@
     </div>
   </div>
 
-  <div class="section" id="about">
+  <div class="section fade-section" id="about">
     <div class="section-tag">// about me</div>
     <div class="section-title">Who am I?</div>
     <div class="about-grid">
       <div class="about-text">
         Hey! I'm Shaan — a developer based in Sydney, Australia 🇦🇺<br><br>
-        I love building things from scratch using HTML, CSS and JavaScript. I started coding recently and already have a live website with a multi-user login, terminal OS, RPG game and matrix rain background.<br><br>
+        I love building things from scratch using HTML, CSS and JavaScript. I started coding recently and already have a live website with multi-user login, terminal OS, RPG game and matrix rain.<br><br>
         When I'm not coding, I'm probably gaming or thinking about the next thing to build. 😎
       </div>
       <div class="stat-grid">
@@ -148,58 +169,24 @@
     </div>
   </div>
 
-  <div class="section" id="skills">
+  <div class="section fade-section" id="skills">
     <div class="section-tag">// skills</div>
     <div class="section-title">What I work with</div>
-    <div class="skills-wrap">
-      <div class="skill">HTML</div>
-      <div class="skill">CSS</div>
-      <div class="skill">JavaScript</div>
-      <div class="skill">GitHub</div>
-      <div class="skill">GitHub Pages</div>
-      <div class="skill">localStorage</div>
-      <div class="skill">Terminal UIs</div>
-      <div class="skill">Canvas API</div>
-      <div class="skill">Linux Terminal</div>
-      <div class="skill">Responsive Design</div>
-      <div class="skill">Game Logic</div>
-      <div class="skill">Dark Mode 🌙</div>
-      <div class="skill">Vibe Coding 🔥</div>
-    </div>
+    <div id="skill-bars"></div>
   </div>
 
-  <div class="section" id="timeline">
+  <div class="section fade-section" id="timeline">
     <div class="section-tag">// my journey</div>
     <div class="section-title">How I got here</div>
     <div class="timeline">
-      <div class="tl-item">
-        <div class="tl-dot"></div>
-        <div class="tl-date">EARLY 2026</div>
-        <div class="tl-title">Started coding 🌱</div>
-        <div class="tl-desc">Wrote my first lines of HTML and JavaScript. Built a simple terminal called Shaan OS with just 2 commands.</div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-dot"></div>
-        <div class="tl-date">APRIL 2026</div>
-        <div class="tl-title">Shaans Aura Super OS launched 🔥</div>
-        <div class="tl-desc">Built a full terminal OS with multi-user login, matrix rain, RPG game, live weather, themes and more. Deployed live on GitHub Pages.</div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-dot"></div>
-        <div class="tl-date">APRIL 2026</div>
-        <div class="tl-title">Portfolio website 🚀</div>
-        <div class="tl-desc">Designed and built this portfolio from scratch with animations, a working contact form and dark/light mode.</div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-dot"></div>
-        <div class="tl-date">COMING SOON</div>
-        <div class="tl-title">What's next? 👀</div>
-        <div class="tl-desc">Learning more every day. The next project is going to be even bigger. Stay tuned...</div>
-      </div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-date">EARLY 2026</div><div class="tl-title">Started coding 🌱</div><div class="tl-desc">Wrote my first lines of HTML and JavaScript. Built a simple terminal called Shaan OS with just 2 commands.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-date">APRIL 2026</div><div class="tl-title">Shaans Aura Super OS launched 🔥</div><div class="tl-desc">Built a full terminal OS with multi-user login, matrix rain, RPG game, live weather, themes and more. Deployed live on GitHub Pages.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-date">APRIL 2026</div><div class="tl-title">Portfolio website 🚀</div><div class="tl-desc">Designed and built this portfolio from scratch with animations, loading screen, ebook, particle effects and dark/light mode.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-date">COMING SOON</div><div class="tl-title">What's next? 👀</div><div class="tl-desc">Learning more every day. The next project is going to be even bigger. Stay tuned...</div></div>
     </div>
   </div>
 
-  <div class="section" id="projects">
+  <div class="section fade-section" id="projects">
     <div class="section-tag">// projects</div>
     <div class="section-title">Things I've built</div>
     <div class="projects-grid">
@@ -207,48 +194,83 @@
         <div class="project-status status-live">● live</div>
         <div class="project-emoji">🔥</div>
         <div class="project-name">Shaans Aura Super OS</div>
-        <div class="project-desc">A full terminal OS in the browser with multi-user login, RPG game, live weather, matrix rain and 5 colour themes.</div>
-        <div class="project-tags">
-          <span class="project-tag">HTML</span>
-          <span class="project-tag">CSS</span>
-          <span class="project-tag">JavaScript</span>
-          <span class="project-tag">localStorage</span>
-        </div>
+        <div class="project-desc">A full terminal OS with multi-user login, RPG game, live weather, matrix rain and 5 colour themes.</div>
+        <div class="project-tags"><span class="project-tag">HTML</span><span class="project-tag">CSS</span><span class="project-tag">JavaScript</span><span class="project-tag">localStorage</span></div>
       </div>
       <div class="project-card" onclick="window.open('https://shaansaura.github.io/shaan-os/')">
         <div class="project-status status-live">● live</div>
         <div class="project-emoji">💻</div>
         <div class="project-name">Shaan OS v1</div>
         <div class="project-desc">The original web terminal that started it all. A simple command-line interface with custom commands.</div>
-        <div class="project-tags">
-          <span class="project-tag">HTML</span>
-          <span class="project-tag">JavaScript</span>
-        </div>
+        <div class="project-tags"><span class="project-tag">HTML</span><span class="project-tag">JavaScript</span></div>
       </div>
       <div class="project-card" onclick="window.open('https://shaansaura.github.io/portfolio/')">
         <div class="project-status status-live">● live</div>
         <div class="project-emoji">🌐</div>
         <div class="project-name">Portfolio</div>
-        <div class="project-desc">This very site! Dark techy portfolio with matrix rain, typing animation, timeline and working contact form.</div>
-        <div class="project-tags">
-          <span class="project-tag">HTML</span>
-          <span class="project-tag">CSS</span>
-          <span class="project-tag">Formspree</span>
-        </div>
+        <div class="project-desc">This very site! Dark techy portfolio with matrix rain, typing animation, ebook, particles and dark/light mode.</div>
+        <div class="project-tags"><span class="project-tag">HTML</span><span class="project-tag">CSS</span><span class="project-tag">Formspree</span></div>
       </div>
       <div class="project-card">
         <div class="project-status status-soon">○ coming soon</div>
         <div class="project-emoji">🚀</div>
         <div class="project-name">Next Project</div>
         <div class="project-desc">Something epic is in the works. The best is always yet to be built. 👀</div>
-        <div class="project-tags">
-          <span class="project-tag">???</span>
-        </div>
+        <div class="project-tags"><span class="project-tag">???</span></div>
       </div>
     </div>
   </div>
 
-  <div class="section" id="contact">
+  <div class="section fade-section" id="ebook">
+    <div class="section-tag">// about me</div>
+    <div class="section-title">Read my story</div>
+    <div class="ebook-wrap">
+      <div class="ebook-tabs">
+        <div class="ebook-tab active" onclick="ebookPage(0)">intro</div>
+        <div class="ebook-tab" onclick="ebookPage(1)">how i started</div>
+        <div class="ebook-tab" onclick="ebookPage(2)">what i build</div>
+        <div class="ebook-tab" onclick="ebookPage(3)">outside coding</div>
+        <div class="ebook-tab" onclick="ebookPage(4)">the future</div>
+      </div>
+      <div class="ebook-page active" id="ep0">
+        <h3>👋 Hey, I'm Shaan</h3>
+        <p>Welcome to my little corner of the internet. I'm a self-taught developer from Sydney, Australia who fell in love with coding and hasn't stopped since.</p>
+        <p>This isn't just a portfolio — it's proof that you can start from zero and build real things that live on the internet. Everything here I built myself, from scratch, one line at a time.</p>
+        <p>Click through the chapters to learn more about me. 😎</p>
+      </div>
+      <div class="ebook-page" id="ep1">
+        <h3>🌱 How I Started</h3>
+        <p>I didn't have a computer science degree or a fancy course. I just started typing HTML and seeing what happened.</p>
+        <p>My first project was Shaan OS — a simple black screen with two commands: help and hello. It wasn't much, but it was mine. I built it, I deployed it, and I could share the link with anyone in the world.</p>
+        <p>That feeling of seeing something you made live on the internet? That's what got me hooked. 🔥</p>
+      </div>
+      <div class="ebook-page" id="ep2">
+        <h3>⚒️ What I Build</h3>
+        <p>I love building things that feel alive — terminals, games, animations, things that react when you click them.</p>
+        <p>Shaans Aura Super OS is my biggest project so far. It has a full login system, an RPG game, live weather, a matrix rain background, 5 colour themes and a typing boot screen. I built every single line of it.</p>
+        <p>I'm drawn to dark, techy aesthetics — things that look like they belong in a hacker movie. 😄</p>
+      </div>
+      <div class="ebook-page" id="ep3">
+        <h3>🎮 Outside of Coding</h3>
+        <p>When I'm not staring at a screen writing code, I'm probably staring at a screen playing games. Sydney is home, and I love it here.</p>
+        <p>I'm the kind of person who gets an idea at midnight and stays up to build it. The best projects come from genuine curiosity — wanting to know "can I actually make that?"</p>
+        <p>Spoiler: you usually can. It just takes longer than you think. 😂</p>
+      </div>
+      <div class="ebook-page" id="ep4">
+        <h3>🚀 The Future</h3>
+        <p>I'm just getting started. Every project teaches me something new, and I can already feel how much faster I'm getting.</p>
+        <p>Next up: learning more about backends, databases and how to build apps that actually store data in the cloud — not just localStorage.</p>
+        <p>If you want to collab, chat or just say hey — hit the contact form below. Always happy to connect with fellow builders. 🔥</p>
+      </div>
+      <div class="ebook-nav">
+        <button class="btn-secondary" onclick="ebookPrev()" style="padding:6px 16px;font-size:12px;">← prev</button>
+        <span style="font-size:12px;color:var(--text3);" id="ebook-progress">1 / 5</span>
+        <button class="btn-secondary" onclick="ebookNext()" style="padding:6px 16px;font-size:12px;">next →</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="section fade-section" id="contact">
     <div class="section-tag">// contact</div>
     <div class="section-title">Get in touch</div>
     <div class="contact-wrap">
@@ -271,73 +293,154 @@
     </div>
   </div>
 
-  <footer>built by shaan &middot; shaansaura.github.io &middot; 2026</footer>
-
+  <footer>built by shaan &middot; shaansaura.github.io &middot; 2026 &middot; click anywhere for ✨</footer>
 </div>
 
 <script>
-  const c = document.getElementById('bg');
-  const cx = c.getContext('2d');
-  c.width = window.innerWidth; c.height = window.innerHeight;
-  const cols = Math.floor(c.width / 16);
-  const drops = Array(cols).fill(1);
-  function draw() {
-    cx.fillStyle = 'rgba(10,10,10,0.05)';
-    cx.fillRect(0, 0, c.width, c.height);
-    cx.fillStyle = '#22c55e';
-    cx.font = '14px Courier New';
-    drops.forEach((y, i) => {
-      cx.fillText(String.fromCharCode(0x30A0 + Math.random() * 96), i * 16, y * 16);
-      if (y * 16 > c.height && Math.random() > 0.975) drops[i] = 0;
-      drops[i]++;
-    });
+// ── loader ──
+let prog = 0;
+const loaderBar = document.getElementById('loader-bar');
+const loaderPct = document.getElementById('loader-pct');
+const loaderEl  = document.getElementById('loader');
+const loaderInt = setInterval(() => {
+  prog += Math.random() * 15;
+  if (prog >= 100) { prog = 100; clearInterval(loaderInt);
+    setTimeout(() => { loaderEl.style.opacity = '0'; setTimeout(() => loaderEl.style.display = 'none', 600); }, 300);
   }
-  setInterval(draw, 50);
-  window.addEventListener('resize', () => { c.width = window.innerWidth; c.height = window.innerHeight; });
-  function goTo(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); }
+  loaderBar.style.width = prog + '%';
+  loaderPct.textContent = Math.floor(prog) + '%';
+}, 120);
 
-  // dark/light toggle
-  let isLight = false;
-  function toggleTheme() {
-    isLight = !isLight;
-    document.body.classList.toggle('light', isLight);
-    document.getElementById('theme-btn').textContent = isLight ? '🌙 dark' : '☀️ light';
-  }
-
-  // typing animation
-  const phrases = ['self-taught developer.', 'terminal builder.', 'vibe coder. 🔥', 'Sydney based. 🇦🇺', 'open to collabs.'];
-  let pi = 0, ci = 0, deleting = false;
-  const typedEl = document.getElementById('typed');
-  function type() {
-    const word = phrases[pi];
-    if (!deleting) {
-      typedEl.textContent = word.slice(0, ++ci);
-      if (ci === word.length) { deleting = true; setTimeout(type, 1800); return; }
-    } else {
-      typedEl.textContent = word.slice(0, --ci);
-      if (ci === 0) { deleting = false; pi = (pi + 1) % phrases.length; }
-    }
-    setTimeout(type, deleting ? 60 : 90);
-  }
-  type();
-
-  // contact form
-  const form = document.getElementById('contact-form');
-  const btn = document.getElementById('submit-btn');
-  const successMsg = document.getElementById('success-msg');
-  form.addEventListener('submit', async function(e) {
-    e.preventDefault();
-    btn.textContent = 'sending...';
-    btn.disabled = true;
-    try {
-      const res = await fetch('https://formspree.io/f/mojyrpop', {
-        method: 'POST', body: new FormData(form),
-        headers: { 'Accept': 'application/json' }
-      });
-      if (res.ok) { form.style.display = 'none'; successMsg.style.display = 'block'; }
-      else { btn.textContent = 'error — try again'; btn.disabled = false; }
-    } catch(e) { btn.textContent = 'error — try again'; btn.disabled = false; }
+// ── matrix ──
+const c = document.getElementById('bg');
+const cx = c.getContext('2d');
+c.width = window.innerWidth; c.height = window.innerHeight;
+const cols = Math.floor(c.width/16);
+const drops = Array(cols).fill(1);
+function drawMatrix() {
+  cx.fillStyle = 'rgba(10,10,10,0.05)';
+  cx.fillRect(0,0,c.width,c.height);
+  cx.fillStyle = '#22c55e';
+  cx.font = '14px Courier New';
+  drops.forEach((y,i) => {
+    cx.fillText(String.fromCharCode(0x30A0+Math.random()*96), i*16, y*16);
+    if (y*16 > c.height && Math.random() > 0.975) drops[i] = 0;
+    drops[i]++;
   });
+}
+setInterval(drawMatrix, 50);
+window.addEventListener('resize', () => { c.width=window.innerWidth; c.height=window.innerHeight; });
+
+// ── particles ──
+const pc = document.getElementById('particles');
+const pctx = pc.getContext('2d');
+pc.width = window.innerWidth; pc.height = window.innerHeight;
+window.addEventListener('resize', () => { pc.width=window.innerWidth; pc.height=window.innerHeight; });
+let parts = [];
+function spawnParticles(x, y) {
+  for (let i = 0; i < 18; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 1.5 + Math.random() * 4;
+    const colors = ['#22c55e','#38bdf8','#ffd93d','#f472b6','#a78bfa'];
+    parts.push({ x, y, vx: Math.cos(angle)*speed, vy: Math.sin(angle)*speed,
+      life: 1, color: colors[Math.floor(Math.random()*colors.length)], size: 2+Math.random()*3 });
+  }
+}
+function animateParticles() {
+  pctx.clearRect(0, 0, pc.width, pc.height);
+  parts = parts.filter(p => p.life > 0);
+  parts.forEach(p => {
+    pctx.globalAlpha = p.life;
+    pctx.fillStyle = p.color;
+    pctx.beginPath();
+    pctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+    pctx.fill();
+    p.x += p.vx; p.y += p.vy; p.vy += 0.1; p.life -= 0.025;
+  });
+  pctx.globalAlpha = 1;
+  requestAnimationFrame(animateParticles);
+}
+animateParticles();
+document.addEventListener('click', e => spawnParticles(e.clientX, e.clientY));
+
+// ── scroll fade ──
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-section').forEach(el => observer.observe(el));
+
+// ── skill bars ──
+const skills = [
+  { name:'HTML', pct:90 }, { name:'CSS', pct:85 }, { name:'JavaScript', pct:75 },
+  { name:'GitHub', pct:80 }, { name:'Canvas API', pct:65 }, { name:'Game Logic', pct:70 },
+  { name:'Linux Terminal', pct:60 }, { name:'Responsive Design', pct:75 },
+];
+const sbWrap = document.getElementById('skill-bars');
+skills.forEach(s => {
+  sbWrap.innerHTML += `<div class="skill-bar-wrap">
+    <div class="skill-bar-label"><span>${s.name}</span><span>${s.pct}%</span></div>
+    <div class="skill-bar-track"><div class="skill-bar-fill" data-pct="${s.pct}"></div></div>
+  </div>`;
+});
+const barObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.querySelectorAll('.skill-bar-fill').forEach(bar => {
+        bar.style.width = bar.dataset.pct + '%';
+      });
+    }
+  });
+}, { threshold: 0.3 });
+barObserver.observe(sbWrap);
+
+// ── theme ──
+let isLight = false;
+function toggleTheme() {
+  isLight = !isLight;
+  document.body.classList.toggle('light', isLight);
+  document.getElementById('theme-btn').textContent = isLight ? '🌙 dark' : '☀️ light';
+}
+
+// ── typing ──
+const phrases = ['self-taught developer.','terminal builder.','vibe coder. 🔥','Sydney based. 🇦🇺','open to collabs.'];
+let pi=0, ci=0, deleting=false;
+const typedEl = document.getElementById('typed');
+function type() {
+  const word = phrases[pi];
+  if (!deleting) { typedEl.textContent = word.slice(0,++ci); if(ci===word.length){deleting=true;setTimeout(type,1800);return;} }
+  else { typedEl.textContent = word.slice(0,--ci); if(ci===0){deleting=false;pi=(pi+1)%phrases.length;} }
+  setTimeout(type, deleting?60:90);
+}
+type();
+
+// ── ebook ──
+let ebookCur = 0;
+function ebookPage(n) {
+  document.querySelectorAll('.ebook-page').forEach((p,i) => p.classList.toggle('active', i===n));
+  document.querySelectorAll('.ebook-tab').forEach((t,i) => t.classList.toggle('active', i===n));
+  document.getElementById('ebook-progress').textContent = (n+1) + ' / 5';
+  ebookCur = n;
+}
+function ebookNext() { if(ebookCur<4) ebookPage(ebookCur+1); }
+function ebookPrev() { if(ebookCur>0) ebookPage(ebookCur-1); }
+
+// ── nav ──
+function goTo(id) { document.getElementById(id).scrollIntoView({behavior:'smooth'}); }
+
+// ── contact ──
+const form = document.getElementById('contact-form');
+const btn  = document.getElementById('submit-btn');
+const successMsg = document.getElementById('success-msg');
+form.addEventListener('submit', async function(e) {
+  e.preventDefault(); btn.textContent='sending...'; btn.disabled=true;
+  try {
+    const res = await fetch('https://formspree.io/f/mojyrpop', {
+      method:'POST', body:new FormData(form), headers:{'Accept':'application/json'}
+    });
+    if(res.ok){form.style.display='none';successMsg.style.display='block';}
+    else{btn.textContent='error — try again';btn.disabled=false;}
+  } catch(e){btn.textContent='error — try again';btn.disabled=false;}
+});
 </script>
 </body>
 </html>
